@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Search App</title>
+    <style>
+        #loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Search</h1>
+    <form method="post" onsubmit="showLoading()">
+        <label for="query">Search:</label>
+        <input type="text" name="query" id="query" value="{{ query }}" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Loading Animation -->
+    <div id="loading">Loading...</div>
+
+    {% if books %}
+        <h2>Search Results:</h2>
+        <ul>
+            {% for book in books %}
+                <li>
+                    <strong>{{ book.volumeInfo.title }}</strong><br>
+                    {% if book.volumeInfo.authors %}
+                        <em>By {{ ", ".join(book.volumeInfo.authors) }}</em><br>
+                    {% endif %}
+                    {% if book.volumeInfo.publishedDate %}
+                        <small>Published: {{ book.volumeInfo.publishedDate }}</small><br>
+                    {% endif %}
+                    {% if book.volumeInfo.description %}
+                        <p>{{ book.volumeInfo.description }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+    </script>
+</body>
+</html>
