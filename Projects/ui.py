@@ -2,7 +2,6 @@ import tkinter as tk
 
 
 class BaseApp:
-    name = "Base App"
     def __init__(self, parent_frame, return_callback):
         self.parent_frame = parent_frame
         self.return_callback = return_callback
@@ -14,6 +13,3 @@ class BaseApp:
             self.parent_frame, text="Return to Homepage", command=self.return_callback)
         self.return_button.pack(pady=10)
         return None
-    
-    def app_name(self):
-        return self.name

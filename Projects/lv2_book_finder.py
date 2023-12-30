@@ -7,7 +7,6 @@ from ui import BaseApp
 class BookSearchApp(BaseApp):
     def __init__(self, parent_frame, return_callback):
         super().__init__(parent_frame, return_callback)
-        self.name = "Book Search App"
 
     def create_widgets(self):
         # Book Search Widgets

@@ -11,10 +11,10 @@ class Input_Class():
         pass
 
 class MainApp:
-    def __init__(self, root, app_list:[Input_Class]):
+    def __init__(self, root, app_list:list[Input_Class]):
         self.root = root
         self.root.title("Combined App")
-        self.app_list:[Input_Class] = app_list
+        self.app_list = app_list
 
         self.create_homepage()
 
@@ -26,7 +26,7 @@ class MainApp:
             row=0, column=0, columnspan=2, pady=10)
 
         for i in range(len(self.app_list)):
-            self.app_class:Input_Class = self.app_list[i]
+            self.app_class = self.app_list[i]
             ttk.Button(homepage_frame, text=self.app_class.name,
                        command=self.create_app).grid(row=int(i/2)+1, column=int(i % 2), padx=10)
 
