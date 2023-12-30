@@ -2,30 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from ui import BaseUI
 
-gmt = {
-    "Moscow": 3,
-    "Paris": 2,
-    "Berlin": 2,
-    "Brussels": 2,
-    "Amsterdam": 2,
-    "Rome": 2,
-    "London": 1,
-    "Dublin": 1,
-    "New York": -4,
-    "Washington": -4,
-    "St. Louis": -5,
-    "Los Angeles": -7,
-    "Tokyo": 9,
-    "Beijing": 8,
-    "Ho Chi Mihn City": 7,
-    "Mumbai": 5,
-}
-
-def showGMT(place: tuple):
-    sign = "+" if place[1] > 0 else ""
-    return f"{place[0]}: GMT {sign}{place[1]}"
-
-class mainAPP (BaseUI):
+class mainAPP(BaseUI):
     def __init__(self, root):
         super().__init__(root)
         self.cities = {
