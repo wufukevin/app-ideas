@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-from ui import BaseUI
+from ui import BaseApp
 
-class mainAPP(BaseUI):
-    def __init__(self, root):
-        super().__init__(root)
+
+class TimezoneApp(BaseApp):
+    def __init__(self, parent_frame, return_callback):
+        super().__init__(parent_frame, return_callback)
         self.cities = {
             "Moscow": 3,
             "Paris": 2,
@@ -23,9 +24,8 @@ class mainAPP(BaseUI):
             "Ho Chi Mihn City": 7,
             "Mumbai": 5,
         }
-    
+
     def create_widgets(self):
-        print("kevin child widget")
         # Timezone Finder Widgets
         self.gmt_label = tk.Label(self.parent_frame, text="Enter GMT Offset:")
         self.gmt_label.pack(pady=5)

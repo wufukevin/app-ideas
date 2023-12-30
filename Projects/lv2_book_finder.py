@@ -1,16 +1,16 @@
 import tkinter as tk
 from tkinter import scrolledtext
 import requests
-from ui import BaseUI
+from ui import BaseApp
 
 
-class mainAPP(BaseUI):
-    def __init__(self, root):
-        super().__init__(root)
+class BookSearchApp(BaseApp):
+    def __init__(self, parent_frame, return_callback):
+        super().__init__(parent_frame, return_callback)
+        self.name = "Book Search App"
 
     def create_widgets(self):
         # Book Search Widgets
-        print("kevin create book widget")
         self.query_label = tk.Label(self.parent_frame, text="Book Search:")
         self.query_label.pack(pady=5)
         self.query_entry = tk.Entry(self.parent_frame)
@@ -22,6 +22,7 @@ class mainAPP(BaseUI):
         self.book_output_text = scrolledtext.ScrolledText(
             self.parent_frame, wrap=tk.WORD, width=40, height=10)
         self.book_output_text.pack(pady=10)
+        return super().create_widgets()
 
     def search_books(self):
         query = self.query_entry.get()
@@ -55,4 +56,3 @@ class mainAPP(BaseUI):
         else:
             output_text_widget.insert(tk.END, "No results found.")
         output_text_widget.yview(tk.END)
-

@@ -1,11 +1,19 @@
 import tkinter as tk
-class BaseUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Main App")
-        self.parent_frame = tk.Frame(self.root)
-        self.parent_frame.pack(side=tk.RIGHT, padx=0)
+
+
+class BaseApp:
+    name = "Base App"
+    def __init__(self, parent_frame, return_callback):
+        self.parent_frame = parent_frame
+        self.return_callback = return_callback
         self.create_widgets()
 
     def create_widgets(self):
+        # Return to Homepage Button
+        self.return_button = tk.Button(
+            self.parent_frame, text="Return to Homepage", command=self.return_callback)
+        self.return_button.pack(pady=10)
         return None
+    
+    def app_name(self):
+        return self.name

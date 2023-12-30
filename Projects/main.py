@@ -1,7 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
-from lv2_book_finder import mainAPP
+from main_app import MainApp
+from main_app import Input_Class
+from lv2_bit_masks import TimezoneApp
+from lv2_book_finder import BookSearchApp
+
+
 
 root = tk.Tk()
-app = mainAPP(root)
+app = MainApp(root, [Input_Class(TimezoneApp, "Timezone App"),
+              Input_Class(BookSearchApp, "Book Search App")])
 root.mainloop()
