@@ -45,6 +45,7 @@ class CardMemoryGameApp(BaseApp):
                 self.buttons.append(button)
                 self.card_state[(row, col)] = {
                     'image': self.card_images[index], 'state': 'hidden'}
+        super().create_widgets()
 
     def card_click(self, row, col):
         # Ignore clicks on already revealed cards

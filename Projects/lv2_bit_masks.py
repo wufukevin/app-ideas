@@ -38,8 +38,7 @@ class TimezoneApp(BaseApp):
         self.timezone_output_text = tk.Text(
             self.parent_frame, height=10, width=30, wrap=tk.WORD)
         self.timezone_output_text.pack(pady=10)
-
-        return super().create_widgets()
+        super().create_widgets()
 
     def find_cities(self):
         gmt_offset = self.get_gmt_offset()

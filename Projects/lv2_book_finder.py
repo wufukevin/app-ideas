@@ -21,7 +21,7 @@ class BookSearchApp(BaseApp):
         self.book_output_text = scrolledtext.ScrolledText(
             self.parent_frame, wrap=tk.WORD, width=40, height=10)
         self.book_output_text.pack(pady=10)
-        return super().create_widgets()
+        super().create_widgets()
 
     def search_books(self):
         query = self.query_entry.get()

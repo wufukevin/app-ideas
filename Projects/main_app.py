@@ -26,15 +26,14 @@ class MainApp:
             row=0, column=0, columnspan=2, pady=10)
 
         for i in range(len(self.app_list)):
-            self.app_class = self.app_list[i]
-            ttk.Button(homepage_frame, text=self.app_class.name,
-                       command=self.create_app).grid(row=int(i/2)+1, column=int(i % 2), padx=10)
+            ttk.Button(homepage_frame, text=self.app_list[i].name,
+                       command=lambda i = i: self.create_app(i)).grid(row=int(i/2)+1, column=int(i % 2), padx=10)
 
-    def create_app(self):
+    def create_app(self, i):
         self.clear_frame()
         app_frame = tk.Frame(self.root)
         app_frame.pack(side=tk.BOTTOM, padx=10)
-        self.app_class.type(app_frame, self.return_to_homepage)
+        self.app_list[i].type(app_frame, self.return_to_homepage)
 
     def return_to_homepage(self):
         self.clear_frame()

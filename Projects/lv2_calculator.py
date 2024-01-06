@@ -15,7 +15,8 @@ class CalculatorApp(BaseApp):
         self.search_button = tk.Button(
             self.parent_frame, text="Enter", command=self.enter_click)
         self.search_button.pack(pady=10)
-
+        super().create_widgets()
+    
     def enter_click(self):
         current_text = self.num_entry.get()
         try:
