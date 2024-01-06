@@ -6,6 +6,12 @@ from PIL import Image, ImageTk
 import subprocess
 from ui import BaseApp
 import os
+from enum import Enum
+
+class CardState(Enum):
+    HIDDEN = 0
+    REVEALED = 1
+    FINED = 2
 
 class CardMemoryGameApp(BaseApp):
     def __init__(self, parent_frame, return_callback):
@@ -44,35 +50,49 @@ class CardMemoryGameApp(BaseApp):
                 button.grid(row=row, column=col, padx=5, pady=5)
                 self.buttons.append(button)
                 self.card_state[(row, col)] = {
-                    'image': self.card_images[index], 'state': 'hidden'}
+                    'image': self.card_images[index], 'state': CardState.HIDDEN}
+        self.return_button = tk.Button(
+            self.parent_frame, text="Reset", command=self.reset_game)
+        self.return_button.place(relx=0.9, rely=0.9, anchor=tk.CENTER)
         super().create_widgets()
 
     def card_click(self, row, col):
         # Ignore clicks on already revealed cards
-        if self.card_state[(row, col)]['state'] == 'revealed' or not self.clickable:
+        if self.card_state[(row, col)]['state'] != CardState.HIDDEN or not self.clickable:
             return
 
         # Reveal the clicked card
         index = row * self.columns + col
         self.set_button_img(self.buttons[index], self.card_images[index])
-        self.card_state[(row, col)]['state'] = 'revealed'
+        self.card_state[(row, col)]['state'] = CardState.REVEALED
 
         # Check for a match
         revealed_cards = [(r, c) for (
-            r, c), data in self.card_state.items() if data['state'] == 'revealed']
+            r, c), data in self.card_state.items() if data['state'] == CardState.REVEALED]
         if len(revealed_cards) == 2:
             self.clickable = False
             if self.card_state[revealed_cards[0]]['image'] == self.card_state[revealed_cards[1]]['image']:
-                messagebox.showinfo("Match", "You found a match!")
-                self.parent_frame.after(1000, lambda: self.hide_cards(
+                self.parent_frame.after(10, lambda: self.hide_cards(
                     revealed_cards, finished=True))
             else:
                 self.parent_frame.after(1000, lambda: self.hide_cards(revealed_cards))
 
     def hide_cards(self, cards, finished=False):
+        if(finished): messagebox.showinfo("Match", "You found a match!")
         for (row, col) in cards:
             self.set_button_img(
                 self.buttons[row * self.columns + col], "black" if finished else "white")
             self.card_state[(row, col)
-                            ]['state'] = 'fined' if finished else 'hidden'
+                            ]['state'] = CardState.FINED if finished else CardState.HIDDEN
         self.clickable = True
+    
+    def reset_game(self):
+        random.shuffle(self.card_images)
+        for row in range(self.rows):
+            for col in range(self.columns):
+                index = row * self.columns + col
+                self.set_button_img(self.buttons[index], "white")
+                self.card_state[(row, col)] = {
+                    'image': self.card_images[index], 'state': CardState.HIDDEN}
+        self.clickable = True
+        return None
