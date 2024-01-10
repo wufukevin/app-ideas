@@ -5,15 +5,15 @@ import subprocess
 from ui import BaseApp
 
 class CalculatorApp(BaseApp):
-    def __init__(self, parent_frame, return_callback):
-        super().__init__(parent_frame, return_callback)
+    def __init__(self, header_frame, content_frame, footer_frame, return_callback):
+        super().__init__(header_frame, content_frame, footer_frame, return_callback)
 
     def create_widgets(self):
         # Entry widget to input numbers
-        self.num_entry = tk.Entry(self.parent_frame)
+        self.num_entry = tk.Entry(self.content_frame)
         self.num_entry.pack(pady=5)
         self.search_button = tk.Button(
-            self.parent_frame, text="Enter", command=self.enter_click)
+            self.content_frame, text="Enter", command=self.enter_click)
         self.search_button.pack(pady=10)
         super().create_widgets()
     

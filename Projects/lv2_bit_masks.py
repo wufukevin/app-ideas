@@ -4,8 +4,8 @@ from ui import BaseApp
 
 
 class TimezoneApp(BaseApp):
-    def __init__(self, parent_frame, return_callback):
-        super().__init__(parent_frame, return_callback)
+    def __init__(self, header_frame, content_frame, footer_frame, return_callback):
+        super().__init__(header_frame, content_frame, footer_frame, return_callback)
         self.cities = {
             "Moscow": 3,
             "Paris": 2,
@@ -27,16 +27,16 @@ class TimezoneApp(BaseApp):
 
     def create_widgets(self):
         # Timezone Finder Widgets
-        self.gmt_label = tk.Label(self.parent_frame, text="Enter GMT Offset:")
+        self.gmt_label = tk.Label(self.content_frame, text="Enter GMT Offset:")
         self.gmt_label.pack(pady=5)
-        self.gmt_entry = tk.Entry(self.parent_frame)
+        self.gmt_entry = tk.Entry(self.content_frame)
         self.gmt_entry.pack(pady=5)
         self.find_button = tk.Button(
-            self.parent_frame, text="Find Cities", command=self.find_cities)
+            self.content_frame, text="Find Cities", command=self.find_cities)
         self.find_button.pack(pady=10)
 
         self.timezone_output_text = tk.Text(
-            self.parent_frame, height=10, width=30, wrap=tk.WORD)
+            self.content_frame, height=10, width=30, wrap=tk.WORD)
         self.timezone_output_text.pack(pady=10)
         super().create_widgets()
 

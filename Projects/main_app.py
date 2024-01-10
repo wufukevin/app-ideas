@@ -31,9 +31,13 @@ class MainApp:
 
     def create_app(self, i):
         self.clear_frame()
-        app_frame = tk.Frame(self.root)
-        app_frame.pack(side=tk.BOTTOM, padx=10)
-        self.app_list[i].type(app_frame, self.return_to_homepage)
+        header_frame = tk.Frame(self.root)
+        content_frame = tk.Frame(self.root)
+        footer_frame = tk.Frame(self.root)
+        header_frame.pack(side=tk.TOP, padx=10)
+        content_frame.pack(side=tk.TOP, padx=10)
+        footer_frame.pack(side=tk.BOTTOM, padx=10)
+        self.app_list[i].type(header_frame, content_frame, footer_frame, self.return_to_homepage)
 
     def return_to_homepage(self):
         self.clear_frame()

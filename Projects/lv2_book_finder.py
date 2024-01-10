@@ -5,21 +5,21 @@ from ui import BaseApp
 
 
 class BookSearchApp(BaseApp):
-    def __init__(self, parent_frame, return_callback):
-        super().__init__(parent_frame, return_callback)
+    def __init__(self, header_frame, content_frame, footer_frame, return_callback):
+        super().__init__(header_frame, content_frame, footer_frame, return_callback)
 
     def create_widgets(self):
         # Book Search Widgets
-        self.query_label = tk.Label(self.parent_frame, text="Book Search:")
+        self.query_label = tk.Label(self.content_frame, text="Book Search:")
         self.query_label.pack(pady=5)
-        self.query_entry = tk.Entry(self.parent_frame)
+        self.query_entry = tk.Entry(self.content_frame)
         self.query_entry.pack(pady=5)
         self.search_button = tk.Button(
-            self.parent_frame, text="Search Books", command=self.search_books)
+            self.content_frame, text="Search Books", command=self.search_books)
         self.search_button.pack(pady=10)
 
         self.book_output_text = scrolledtext.ScrolledText(
-            self.parent_frame, wrap=tk.WORD, width=40, height=10)
+            self.content_frame, wrap=tk.WORD, width=40, height=10)
         self.book_output_text.pack(pady=10)
         super().create_widgets()
 

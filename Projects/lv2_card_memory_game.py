@@ -14,7 +14,7 @@ class CardState(Enum):
     FINED = 2
 
 class CardMemoryGameApp(BaseApp):
-    def __init__(self, parent_frame, return_callback):
+    def __init__(self, header_frame, content_frame, footer_frame, return_callback):
         self.rows = 3
         self.columns = 4
         self.clickable = True
@@ -26,7 +26,7 @@ class CardMemoryGameApp(BaseApp):
 
         # Dictionary to track the state of each card
         self.card_state = {}
-        super().__init__(parent_frame, return_callback)
+        super().__init__(header_frame, content_frame, footer_frame, return_callback)
 
     def set_button_img(self, button: tk.Button, image_name):
         img = Image.open(
@@ -45,15 +45,15 @@ class CardMemoryGameApp(BaseApp):
                 index = row * self.columns + col
 
                 button = tk.Button(
-                    self.parent_frame, command=lambda r=row, c=col: self.card_click(r, c))
+                    self.content_frame, command=lambda r=row, c=col: self.card_click(r, c))
                 self.set_button_img(button, "white")
                 button.grid(row=row, column=col, padx=5, pady=5)
                 self.buttons.append(button)
                 self.card_state[(row, col)] = {
                     'image': self.card_images[index], 'state': CardState.HIDDEN}
         self.return_button = tk.Button(
-            self.parent_frame, text="Reset", command=self.reset_game)
-        self.return_button.place(relx=0.9, rely=0.9, anchor=tk.CENTER)
+            self.footer_frame, text="Reset", command=self.reset_game)
+        self.return_button.pack(side=tk.RIGHT, pady=10)
         super().create_widgets()
 
     def card_click(self, row, col):
@@ -72,10 +72,11 @@ class CardMemoryGameApp(BaseApp):
         if len(revealed_cards) == 2:
             self.clickable = False
             if self.card_state[revealed_cards[0]]['image'] == self.card_state[revealed_cards[1]]['image']:
-                self.parent_frame.after(10, lambda: self.hide_cards(
+                self.content_frame.after( 10, lambda: self.hide_cards(
                     revealed_cards, finished=True))
             else:
-                self.parent_frame.after(1000, lambda: self.hide_cards(revealed_cards))
+                self.content_frame.after(
+                    1000, lambda: self.hide_cards(revealed_cards))
 
     def hide_cards(self, cards, finished=False):
         if(finished): messagebox.showinfo("Match", "You found a match!")
