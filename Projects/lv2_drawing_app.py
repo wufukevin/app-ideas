@@ -14,7 +14,7 @@ from enum import Enum
 class DrawingApp(BaseApp):
     def __init__(self, header_frame, content_frame, footer_frame, return_callback):
         self.selected_color = "red"
-        self.selected_width = 10
+        self.width_of_line = 1
         self.mouse_x = 0
         self.mouse_y = 0
         super().__init__(header_frame, content_frame, footer_frame, return_callback)
@@ -41,9 +41,9 @@ class DrawingApp(BaseApp):
         for i in range(nsteps):
             cvs2.create_bitmap((i+1)*step_x - step_x/2, 20, bitmap=bitmaps[i])
         
-        # Rectangle size scale
+        # line size scale
         self.size_scale = tk.Scale(self.content_frame, label="Width of line", from_=1,
-                                   to=50, orient=tk.HORIZONTAL, command=self.update_width)
+                                   to=5, orient=tk.HORIZONTAL, command=self.update_width_of_line)
         self.size_scale.pack(pady=10)
 
         # Color frame to display selected color
@@ -67,12 +67,12 @@ class DrawingApp(BaseApp):
 
     def addLine(self, event):
         self.cvs.create_line((self.mouse_x, self.mouse_y, event.x, event.y),
-                            fill=self.selected_color, width=self.selected_width)
+                             fill=self.selected_color, width=self.width_of_line.get())
         self.mouse_x = event.x
         self.mouse_y = event.y
     
-    def update_width(self, size):
-        self.selected_width = int(size)
+    def update_width_of_line(self, size):
+        self.width_of_line = int(size)
 
     def choose_color(self):
         color = colorchooser.askcolor(initialcolor=self.selected_color)
@@ -83,8 +83,8 @@ class DrawingApp(BaseApp):
 
     def draw_rectangle(self, event):
         x, y = event.x, event.y
-        x1, y1 = x - self.selected_width, y - self.selected_width
-        x2, y2 = x + self.selected_width, y + self.selected_width
+        x1, y1 = x - self.width_of_line, y - self.width_of_line
+        x2, y2 = x + self.width_of_line, y + self.width_of_line
         self.cvs.create_rectangle(
             x1, y1, x2, y2, fill=self.selected_color, outline="black")
 
