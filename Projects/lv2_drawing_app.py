@@ -17,6 +17,7 @@ class DrawingApp(BaseApp):
         self.width_of_line = 1
         self.mouse_x = 0
         self.mouse_y = 0
+        self.lines = []
         super().__init__(header_frame, content_frame, footer_frame, return_callback)
 
     def create_widgets(self):
@@ -56,9 +57,12 @@ class DrawingApp(BaseApp):
         self.color_button = tk.Button(
             self.content_frame, text="Select Color", command=self.choose_color, bg="yellow", background="blue")
         self.color_button.pack(pady=10)
+        
+        # Clear button
+        self.clear_button = tk.Button(
+            self.header_frame, text="Clear", command=self.clear)
+        self.clear_button.pack(side=tk.RIGHT, padx=10)
 
-        # Bind mouse events to the canvas
-        # self.cvs.bind("<B1-Motion>", self.draw_rectangle)
         super().create_widgets()
 
     def xy(self, event):
@@ -67,7 +71,7 @@ class DrawingApp(BaseApp):
 
     def addLine(self, event):
         self.cvs.create_line((self.mouse_x, self.mouse_y, event.x, event.y),
-                             fill=self.selected_color, width=self.width_of_line.get())
+                             fill=self.selected_color, width=self.width_of_line)
         self.mouse_x = event.x
         self.mouse_y = event.y
     
@@ -87,4 +91,7 @@ class DrawingApp(BaseApp):
         x2, y2 = x + self.width_of_line, y + self.width_of_line
         self.cvs.create_rectangle(
             x1, y1, x2, y2, fill=self.selected_color, outline="black")
+    
+    def clear(self):
+        self.cvs.delete("all")
 
