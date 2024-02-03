@@ -100,10 +100,10 @@ class GameUI:
             self.shoot_y.set("")
 
     def show_ships(self):
-        for board_number, battlefield_data in enumerate(self.engine.battlefield_data):
+        for battlefield_data in self.engine.battlefield_data:
             for ship in battlefield_data.placed_ships:
-                for point in ship:
-                    self.update_chessboard(board_number, point[0]+1, point[1]+1, "X")
+                for point in ship.ship_location:
+                    self.update_chessboard(battlefield_data.player_number, point[0]+1, point[1]+1, "X")
         self.reset_button.config(text="Game Over")
                 
     def reset(self):
