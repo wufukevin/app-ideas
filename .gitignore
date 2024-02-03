@@ -5,3 +5,5 @@ Projects/__pycache__/
 Projects/test.py
 
 *.pyc 
+
+Projects/BattleShip_game/__pycache__/
