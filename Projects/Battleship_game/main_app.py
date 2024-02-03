@@ -9,7 +9,7 @@ class MainApp:
     def __init__(self, root):
         self.root = root
         self.root.title("BattleShip Game")
-        self.root.geometry("300x300")
+        self.root.geometry("1000x500")
 
         self.create_homepage()
 

@@ -1,14 +1,5 @@
 import random
 
-class xy:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-    # judge if two xy objects are equal
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-
 class battlefield_data:
     def __init__(self, player_number):
         self.player_number = player_number
@@ -33,7 +24,7 @@ class Battleship_engine:
             self.layout(data)
             for ship in data.placed_ships:
                 for point in ship:
-                    print(data.player_number, point.x, point.y)
+                    print(data.player_number, point[0], point[1])
         print("Game start")
     
     def layout(self, battlefield_data):
@@ -69,7 +60,7 @@ class Battleship_engine:
                 return None
             else:
                 for i in range(ship_size):
-                    point = xy(x + i, y)
+                    point = (x + i, y)
                     if any(point == placed_point for ship in battlefield_data.placed_ships for placed_point in ship):
                         print("Invalid ship placement")
                         return None
@@ -82,7 +73,7 @@ class Battleship_engine:
                 return None
             else:
                 for i in range(ship_size):
-                    point = xy(x, y + i)
+                    point = (x, y + i)
                     if any(point == placed_point for ship in battlefield_data.placed_ships for placed_point in ship):
                         print("Invalid ship placement")
                         return None
@@ -101,14 +92,14 @@ class Battleship_engine:
     def shoot(self, x, y, player_number=0):
         for ship in self.battlefield_data[player_number].placed_ships:
             for point in ship:
-                if point == xy(x, y):
+                if point == (x, y):
                     ship.remove(point)
                     self.battlefield_data[player_number].shooed_points.append(point)
                     if len(ship) == 0:
                         self.battlefield_data[player_number].placed_ships.remove(ship)
                     return True
         for point in self.battlefield_data[player_number].shooed_points:
-            if point == xy(x, y):
+            if point == (x, y):
                 return True
         return False
     

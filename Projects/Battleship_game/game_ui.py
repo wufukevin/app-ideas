@@ -11,6 +11,7 @@ class GameUI:
         self.width = width
         self.height = height
         self.player_count = player_count
+        self.current_player = 0
         self.engine = Battleship_engine(
             self.width-1, self.height-1, player_count=self.player_count)
         self.shoot_x = tk.StringVar()
@@ -18,39 +19,34 @@ class GameUI:
         self.create_widgets()
     
     def draw_chessboard(self):
-        for board_number in range(self.player_count):
+        for player_number in range(self.player_count):
             for y in range(self.height):
-                self.update_chessboard(board_number+1, -3, y, " ")
-                self.update_chessboard(board_number+1, -2, y, "|")
-                self.update_chessboard(board_number+1, -1, y, " ")
-                # tk.Label(self.content_frame, text=f" ", width=2, height=1).grid(
-                #     row=y, column=(board_number+1)*(self.width+3)-3)
-                # tk.Label(self.content_frame, text=f"|", width=2, height=1).grid(
-                #     row=y, column=(board_number+1)*(self.width+3)-2)
-                # tk.Label(self.content_frame, text=f" ", width=2, height=1).grid(
-                #     row=y, column=(board_number+1)*(self.width+3)-1)
+                self.update_chessboard(player_number+1, -3, y, " ")
+                self.update_chessboard(player_number+1, -2, y, "|")
+                self.update_chessboard(player_number+1, -1, y, " ")
                 for x in range(self.width):
                     if y == 0:
-                        self.update_chessboard(board_number, x, y, f"{x}")
-                        # tk.Label(self.content_frame, text=f"{j}", width=2, height=1).grid(
-                        #     row=i, column=j+p*(self.width+3))
+                        self.update_chessboard(player_number, x, y, f"{x}")
                     else:
                         self.update_chessboard(
-                            board_number, x, y, f"{y}" if x == 0 else "")
-                        # tk.Label(self.content_frame, text=f"{i}" if j == 0 else "", width=2, height=1).grid(
-                        #     row=i, column=j+p*(self.width+3))
+                            player_number, x, y, f"{y}" if x == 0 else "")
                     
 
-    def update_chessboard(self, board_numble, x, y, text):
+    def update_chessboard(self, player_number, x, y, text):
         tk.Label(self.content_frame, text=text, width=2, height=1).grid(
-            row=y, column=x+board_numble*(self.width+3))
+            row=y, column=x+player_number*(self.width+3))
 
     def create_widgets(self):
         # Draw the header
         tk.Button(self.header_frame, text="Radar", command=self.show_ships).pack(
             side=tk.RIGHT, padx=10, pady=10)
 
+        # Draw the content of chessboard
         self.draw_chessboard()
+
+        # Draw info of current player
+        self.player_label = tk.Label(self.footer_frame, text=f"Player {self.current_player+1}")
+        self.player_label.pack(side=tk.TOP, padx=10, pady=10)
 
         # Draw shoot button
         tk.Label(self.footer_frame, text="X:").pack(
@@ -66,12 +62,12 @@ class GameUI:
         tk.Button(self.footer_frame, text="Shoot", command=self.shoot).pack(
             side=tk.LEFT, padx=10, pady=10)
         
-        # Reset Button
+        # Draw reset Button
         self.reset_button = tk.Button(
             self.footer_frame, text="Reset", command=self.reset)
         self.reset_button.pack(side=tk.BOTTOM, pady=10)
 
-        # Return to Homepage Button
+        # Draw return to Homepage Button
         self.return_button = tk.Button(
             self.footer_frame, text="Return", command=self.return_callback)
         self.return_button.pack(side=tk.BOTTOM, pady=10)
@@ -87,17 +83,17 @@ class GameUI:
         return False
 
         
+    def update_player(self):
+        self.current_player = (self.current_player + 1) % self.player_count
+        self.player_label.config(text=f"Player {self.current_player+1}")
+
     def shoot(self):
         x = int(self.shoot_x.get())
         y = int(self.shoot_y.get())
         self.x_entry.delete(0, tk.END)
         self.y_entry.delete(0, tk.END)
-        if self.engine.shoot(x, y):
-            tk.Label(self.content_frame, text="X", width=2, height=1).grid(
-                row=y, column=x)
-        else:
-            tk.Label(self.content_frame, text="O", width=2, height=1).grid(
-                row=y, column=x)
+        self.update_chessboard(self.current_player, x, y, "X" if self.engine.shoot(x-1, y-1) else "O")
+        self.update_player()
         if self.engine.is_game_over():
             self.reset_button.config(text="Game Over")
             self.shoot_x.set("")
@@ -107,10 +103,7 @@ class GameUI:
         for board_number, battlefield_data in enumerate(self.engine.battlefield_data):
             for ship in battlefield_data.placed_ships:
                 for point in ship:
-                    print(board_number, point.x, point.y)
-                    self.update_chessboard(board_number, point.x+1, point.y+1, "X")
-                    # tk.Label(self.content_frame, text="X", width=2, height=1).grid(
-                    #     row=point.y, column=point.x)
+                    self.update_chessboard(board_number, point[0]+1, point[1]+1, "X")
         self.reset_button.config(text="Game Over")
                 
     def reset(self):
@@ -120,4 +113,5 @@ class GameUI:
         self.draw_chessboard()
         self.shoot_x.set("")
         self.shoot_y.set("")
+        self.current_player = 0
         return None
