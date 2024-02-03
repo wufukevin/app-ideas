@@ -3,27 +3,47 @@ from game_engine import Battleship_engine
 
 
 class GameUI:
-    def __init__(self, header_frame, content_frame, footer_frame, return_callback, width=9, height=9):
+    def __init__(self, header_frame, content_frame, footer_frame, return_callback, width=9, height=9, player_count=2):
         self.header_frame = header_frame
         self.content_frame = content_frame
         self.footer_frame = footer_frame
         self.return_callback = return_callback
         self.width = width
         self.height = height
-        self.engine = Battleship_engine(self.width-1, self.height-1)
+        self.player_count = player_count
+        self.engine = Battleship_engine(
+            self.width-1, self.height-1, player_count=self.player_count)
         self.shoot_x = tk.StringVar()
         self.shoot_y = tk.StringVar()
         self.create_widgets()
     
     def draw_chessboard(self):
-        for i in range(self.height):
-            for j in range(self.width):
-                if i == 0:
-                    tk.Label(self.content_frame, text=f"{j}", width=2, height=1).grid(
-                        row=i, column=j)
-                else:
-                    tk.Label(self.content_frame, text=f"{i}" if j == 0 else "", width=2, height=1).grid(
-                        row=i, column=j)
+        for board_number in range(self.player_count):
+            for y in range(self.height):
+                self.update_chessboard(board_number+1, -3, y, " ")
+                self.update_chessboard(board_number+1, -2, y, "|")
+                self.update_chessboard(board_number+1, -1, y, " ")
+                # tk.Label(self.content_frame, text=f" ", width=2, height=1).grid(
+                #     row=y, column=(board_number+1)*(self.width+3)-3)
+                # tk.Label(self.content_frame, text=f"|", width=2, height=1).grid(
+                #     row=y, column=(board_number+1)*(self.width+3)-2)
+                # tk.Label(self.content_frame, text=f" ", width=2, height=1).grid(
+                #     row=y, column=(board_number+1)*(self.width+3)-1)
+                for x in range(self.width):
+                    if y == 0:
+                        self.update_chessboard(board_number, x, y, f"{x}")
+                        # tk.Label(self.content_frame, text=f"{j}", width=2, height=1).grid(
+                        #     row=i, column=j+p*(self.width+3))
+                    else:
+                        self.update_chessboard(
+                            board_number, x, y, f"{y}" if x == 0 else "")
+                        # tk.Label(self.content_frame, text=f"{i}" if j == 0 else "", width=2, height=1).grid(
+                        #     row=i, column=j+p*(self.width+3))
+                    
+
+    def update_chessboard(self, board_numble, x, y, text):
+        tk.Label(self.content_frame, text=text, width=2, height=1).grid(
+            row=y, column=x+board_numble*(self.width+3))
 
     def create_widgets(self):
         # Draw the header
@@ -84,14 +104,18 @@ class GameUI:
             self.shoot_y.set("")
 
     def show_ships(self):
-        for ship in self.engine.placed_ships:
-            for point in ship:
-                tk.Label(self.content_frame, text="X", width=2, height=1).grid(
-                    row=point.y+1, column=point.x+1)
+        for board_number, battlefield_data in enumerate(self.engine.battlefield_data):
+            for ship in battlefield_data.placed_ships:
+                for point in ship:
+                    print(board_number, point.x, point.y)
+                    self.update_chessboard(board_number, point.x+1, point.y+1, "X")
+                    # tk.Label(self.content_frame, text="X", width=2, height=1).grid(
+                    #     row=point.y, column=point.x)
         self.reset_button.config(text="Game Over")
                 
     def reset(self):
-        self.engine = Battleship_engine(self.width-1, self.height-1)
+        self.engine = Battleship_engine(
+            self.width-1, self.height-1, player_count=self.player_count)
         self.reset_button.config(text="Reset")
         self.draw_chessboard()
         self.shoot_x.set("")

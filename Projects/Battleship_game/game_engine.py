@@ -8,8 +8,15 @@ class xy:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
+
+class battlefield_data:
+    def __init__(self, player_number):
+        self.player_number = player_number
+        self.placed_ships = []
+        self.shooed_points = []
+
 class Battleship_engine:
-    def __init__(self, width, height, ship_a_count = 1, ship_b_count = 1, ship_c_count = 1):
+    def __init__(self, width, height, ship_a_count = 1, ship_b_count = 1, ship_c_count = 1, player_count = 1):
         #ship_a: 1*2
         #ship_b: 1*3
         #ship_c: 1*4
@@ -18,28 +25,31 @@ class Battleship_engine:
         self.ship_a_count = ship_a_count
         self.ship_b_count = ship_b_count
         self.ship_c_count = ship_c_count
-        self.placed_ships = []
-        self.shooed_points = []
-        self.layout()
-        for ship in self.placed_ships:
-            for point in ship:
-                print(point.x, point.y)
+        self.player_count = player_count
+        self.battlefield_data = [battlefield_data(i) for i in range(self.player_count)]
+        # self.placed_ships = []
+        # self.shooed_points = []
+        for data in self.battlefield_data:
+            self.layout(data)
+            for ship in data.placed_ships:
+                for point in ship:
+                    print(data.player_number, point.x, point.y)
         print("Game start")
     
-    def layout(self):
+    def layout(self, battlefield_data):
         for i in range(self.ship_c_count):
-            while not self.place_ship("ship_c"):
+            while not self.place_ship("ship_c", battlefield_data):
                 pass
         for i in range(self.ship_b_count):
-            while not self.place_ship("ship_b"):
+            while not self.place_ship("ship_b", battlefield_data):
                 pass
         for i in range(self.ship_a_count):
-            while not self.place_ship("ship_a"):
+            while not self.place_ship("ship_a", battlefield_data):
                 pass
     
-    def place_ship(self, ship_type):
-        x= random.randint(0, self.width-1)
-        y= random.randint(0, self.height-1)
+    def place_ship(self, ship_type, battlefield_data: battlefield_data):
+        x = random.randint(0, self.width - 1)
+        y = random.randint(0, self.height - 1)
         direction = random.choice(["horizontal", "vertical"])
         ship_to_place = []
 
@@ -52,59 +62,58 @@ class Battleship_engine:
         else:
             print("Invalid ship type")
             return None
-        
+
         if direction == "horizontal":
             if x + ship_size > self.width:
                 print("Invalid ship placement")
                 return None
             else:
                 for i in range(ship_size):
-                    point = xy(x+i, y)
-                    for ship in self.placed_ships:
-                        for placed_point in ship:
-                            if placed_point == point:
-                                print("Invalid ship placement")
-                                return None
+                    point = xy(x + i, y)
+                    if any(point == placed_point for ship in battlefield_data.placed_ships for placed_point in ship):
+                        print("Invalid ship placement")
+                        return None
                     else:
                         ship_to_place.append(point)
-                self.placed_ships.append(ship_to_place)
+                battlefield_data.placed_ships.append(ship_to_place)
         elif direction == "vertical":
             if y + ship_size > self.height:
                 print("Invalid ship placement")
                 return None
             else:
                 for i in range(ship_size):
-                    point = xy(x, y+i)
-                    for ship in self.placed_ships:
-                        for placed_point in ship:
-                            if placed_point == point:
-                                print("Invalid ship placement")
-                                return None
+                    point = xy(x, y + i)
+                    if any(point == placed_point for ship in battlefield_data.placed_ships for placed_point in ship):
+                        print("Invalid ship placement")
+                        return None
                     else:
                         ship_to_place.append(point)
-                self.placed_ships.append(ship_to_place)
+                battlefield_data.placed_ships.append(ship_to_place)
         else:
             print("Invalid direction")
             return None
         print("Ship placed successfully")
         return True
     
-    def get_placed_ships(self):
-        return self.placed_ships
+    def get_placed_ships(self, player_number = 0):
+        return self.battlefield_data[player_number].placed_ships
     
-    def shoot(self, x, y):
-        for ship in self.placed_ships:
+    def shoot(self, x, y, player_number=0):
+        for ship in self.battlefield_data[player_number].placed_ships:
             for point in ship:
                 if point == xy(x, y):
                     ship.remove(point)
-                    self.shooed_points.append(point)
+                    self.battlefield_data[player_number].shooed_points.append(point)
                     if len(ship) == 0:
-                        tmp = self.placed_ships.remove(ship)
+                        self.battlefield_data[player_number].placed_ships.remove(ship)
                     return True
-        for point in self.shooed_points:
+        for point in self.battlefield_data[player_number].shooed_points:
             if point == xy(x, y):
                 return True
         return False
     
     def is_game_over(self):
-        return len(self.placed_ships) == 0
+        for data in self.battlefield_data:
+            if len(data.placed_ships) != 0:
+                return False
+        return True
